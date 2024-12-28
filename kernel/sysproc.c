@@ -95,3 +95,19 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+
+// 当前进程的系统调用跟踪掩码
+uint64
+sys_trace(void)
+{
+  int mask;
+
+  // 获取用户程序传入的数据
+  if(argint(0, &mask) < 0){
+    return -1;
+  }
+
+  myproc()->kama_syscall_trace = mask;  // 设置调用进程的 kama_syscall_trace 掩码mask
+
+  return 0;
+}
