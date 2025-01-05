@@ -105,6 +105,7 @@ extern uint64 sys_wait(void);
 extern uint64 sys_write(void);
 extern uint64 sys_uptime(void);
 extern uint64 sys_trace(void);    //全局声明trace系统调用处理函数
+extern uint64 sys_sysinfo(void);
 
 static uint64 (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
@@ -128,7 +129,8 @@ static uint64 (*syscalls[])(void) = {
 [SYS_link]    sys_link,
 [SYS_mkdir]   sys_mkdir,
 [SYS_close]   sys_close,
-[SYS_trace]   sys_trace       //系统调用号 与 处理函数 相关联
+[SYS_trace]   sys_trace,       //系统调用号 与 处理函数 相关联
+[SYS_sysinfo] sys_sysinfo
 };
 
 const char* kama_syscall_names[] = {
@@ -164,6 +166,7 @@ syscall(void)
 
   //获取系统调用号
   num = p->trapframe->a7;
+
   //如果系统调用有效（大于0且小于 syscalls 数组的长度，并且对应的处理函数存在）
   if(num > 0 && num < NELEM(syscalls) && syscalls[num]) {
     // 调用对应的处理函数，并将返回值存储在 a0 寄存器中
